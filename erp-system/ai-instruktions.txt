@@ -1,0 +1,600 @@
+Membuat ERP (Enterprise Resource Planning) dengan fitur yang Anda sebutkan adalah proyek besar yang memerlukan perencanaan yang matang, modularitas, dan implementasi teknologi yang tepat. Berikut adalah panduan langkah demi langkah untuk mengembangkan sistem ERP berbasis **CodeIgniter 4**, **Bootstrap 5**, dan **MySQL**.
+
+---
+
+### **1. Struktur Proyek**
+Sebelum memulai, kita perlu menentukan struktur proyek. Berikut adalah contoh struktur direktori:
+
+```
+/app
+    /Controllers
+        - Penjualan.php
+        - Pengeluaran.php
+        - Produk.php
+        - HutangPiutang.php
+        - Laporan.php
+        - Dashboard.php
+    /Models
+        - PenjualanModel.php
+        - PengeluaranModel.php
+        - ProdukModel.php
+        - HutangPiutangModel.php
+    /Views
+        /penjualan
+            - index.php
+            - tambah.php
+        /pengeluaran
+            - index.php
+            - tambah.php
+        /produk
+            - index.php
+            - tambah.php
+        /hutang_piutang
+            - index.php
+            - tambah.php
+        /laporan
+            - pajak.php
+            - keuangan.php
+        /dashboard
+            - index.php
+/public
+    /assets
+        /css
+        /js
+/system
+...
+```
+
+---
+
+### **2. Database Design**
+Berikut adalah desain tabel MySQL yang dapat digunakan untuk mendukung fitur-fitur yang disebutkan:
+
+#### **Tabel: penjualan**
+| id | tanggal       | total_harga | pajak_ppn | pajak_pph | status   |
+|----|---------------|-------------|-----------|-----------|----------|
+| 1  | 2023-10-01    | 1000000     | 100000    | 10000     | lunas    |
+
+#### **Tabel: pengeluaran**
+| id | tanggal       | nominal | keterangan      |
+|----|---------------|---------|-----------------|
+| 1  | 2023-10-01    | 500000  | Biaya operasional |
+
+#### **Tabel: produk**
+| id | nama_produk | stok | harga_beli | harga_jual |
+|----|-------------|------|------------|------------|
+| 1  | Laptop      | 10   | 5000000    | 7000000    |
+
+#### **Tabel: hutang_piutang**
+| id | jenis        | nominal | tanggal       | status   |
+|----|--------------|---------|---------------|----------|
+| 1  | piutang      | 2000000 | 2023-10-01    | belum bayar |
+
+#### **Tabel: laporan_pajak**
+| id | periode      | total_pajak | jenis_pajak |
+|----|--------------|-------------|-------------|
+| 1  | Oktober 2023 | 500000      | PPN         |
+
+---
+
+### **3. Implementasi Fitur**
+
+#### **a. Penjualan dan Pengeluaran**
+- **Controller (Penjualan.php):**
+```php
+namespace App\Controllers;
+
+use App\Models\PenjualanModel;
+
+class Penjualan extends BaseController
+{
+    public function index()
+    {
+        $model = new PenjualanModel();
+        $data['penjualan'] = $model->findAll();
+        return view('penjualan/index', $data);
+    }
+
+    public function tambah()
+    {
+        if ($this->request->getMethod() === 'post') {
+            $model = new PenjualanModel();
+            $data = [
+                'tanggal' => $this->request->getPost('tanggal'),
+                'total_harga' => $this->request->getPost('total_harga'),
+                'pajak_ppn' => $this->request->getPost('pajak_ppn'),
+                'pajak_pph' => $this->request->getPost('pajak_pph'),
+                'status' => $this->request->getPost('status'),
+            ];
+            $model->insert($data);
+            return redirect()->to('/penjualan');
+        }
+        return view('penjualan/tambah');
+    }
+}
+```
+
+- **View (penjualan/index.php):**
+```html
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tanggal</th>
+            <th>Total Harga</th>
+            <th>PPN</th>
+            <th>PPh</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($penjualan as $row): ?>
+        <tr>
+            <td><?= $row['tanggal'] ?></td>
+            <td><?= number_format($row['total_harga'], 0, ',', '.') ?></td>
+            <td><?= number_format($row['pajak_ppn'], 0, ',', '.') ?></td>
+            <td><?= number_format($row['pajak_pph'], 0, ',', '.') ?></td>
+            <td><?= $row['status'] ?></td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+```
+
+---
+
+#### **b. Manajemen Produk**
+- **Controller (Produk.php):**
+```php
+namespace App\Controllers;
+
+use App\Models\ProdukModel;
+
+class Produk extends BaseController
+{
+    public function index()
+    {
+        $model = new ProdukModel();
+        $data['produk'] = $model->findAll();
+        return view('produk/index', $data);
+    }
+
+    public function tambah()
+    {
+        if ($this->request->getMethod() === 'post') {
+            $model = new ProdukModel();
+            $data = [
+                'nama_produk' => $this->request->getPost('nama_produk'),
+                'stok' => $this->request->getPost('stok'),
+                'harga_beli' => $this->request->getPost('harga_beli'),
+                'harga_jual' => $this->request->getPost('harga_jual'),
+            ];
+            $model->insert($data);
+            return redirect()->to('/produk');
+        }
+        return view('produk/tambah');
+    }
+}
+```
+
+---
+
+#### **c. Hutang dan Piutang**
+- **Controller (HutangPiutang.php):**
+```php
+namespace App\Controllers;
+
+use App\Models\HutangPiutangModel;
+
+class HutangPiutang extends BaseController
+{
+    public function index()
+    {
+        $model = new HutangPiutangModel();
+        $data['hutang_piutang'] = $model->findAll();
+        return view('hutang_piutang/index', $data);
+    }
+
+    public function tambah()
+    {
+        if ($this->request->getMethod() === 'post') {
+            $model = new HutangPiutangModel();
+            $data = [
+                'jenis' => $this->request->getPost('jenis'),
+                'nominal' => $this->request->getPost('nominal'),
+                'tanggal' => $this->request->getPost('tanggal'),
+                'status' => $this->request->getPost('status'),
+            ];
+            $model->insert($data);
+            return redirect()->to('/hutang-piutang');
+        }
+        return view('hutang_piutang/tambah');
+    }
+}
+```
+
+---
+
+#### **d. Pelaporan Pajak**
+- Gunakan query SQL untuk menghitung pajak secara otomatis:
+```sql
+SELECT SUM(pajak_ppn) AS total_ppn, SUM(pajak_pph) AS total_pph FROM penjualan;
+```
+
+---
+
+#### **e. Dashboard Interaktif**
+Gunakan **Chart.js** atau **Highcharts** untuk membuat grafik interaktif di dashboard.
+
+---
+
+### **4. Teknologi Pendukung**
+- **Bootstrap 5**: Untuk desain responsif.
+- **jQuery/JavaScript**: Untuk validasi form dan interaksi UI.
+- **Chart.js/Highcharts**: Untuk visualisasi data di dashboard.
+
+---
+
+### **5. Testing**
+- Lakukan testing unit untuk setiap modul.
+- Uji integrasi antara modul-modul seperti penjualan, produk, dan pelaporan pajak.
+
+---
+
+### **6. Deployment**
+- Gunakan hosting seperti **Heroku**, **AWS**, atau **DigitalOcean**.
+- Pastikan database terhubung dengan benar dan konfigurasi `.env` sudah diatur.
+
+---
+
+Untuk memulai proyek ERP dengan CodeIgniter 4, kita perlu melakukan beberapa langkah inisiasi dan pembuatan migrasi tabel. Berikut adalah panduan langkah demi langkah untuk menginisiasi proyek dan membuat migrasi tabel.
+
+---
+
+### **1. Inisiasi Proyek CodeIgniter 4**
+
+#### **Langkah 1: Instalasi CodeIgniter 4**
+Anda dapat menggunakan Composer untuk menginstal CodeIgniter 4 secara cepat:
+
+```bash
+composer create-project codeigniter4/appstarter nama-proyek
+```
+
+Ganti `nama-proyek` dengan nama yang Anda inginkan, misalnya `erp-system`.
+
+#### **Langkah 2: Konfigurasi Dasar**
+Setelah instalasi selesai, masuk ke direktori proyek:
+
+```bash
+cd nama-proyek
+```
+
+Lalu, salin file `.env.example` ke `.env`:
+
+```bash
+cp env .env
+```
+
+Edit file `.env` untuk mengatur konfigurasi database MySQL:
+
+```env
+# Database Configuration
+database.default.hostname = localhost
+database.default.database = erp_system
+database.default.username = root
+database.default.password = your_password
+database.default.DBDriver = MySQLi
+```
+
+Pastikan database sudah dibuat di MySQL (misalnya dengan nama `erp_system`).
+
+---
+
+### **2. Membuat Migrasi Tabel**
+
+CodeIgniter 4 memiliki fitur migrasi bawaan untuk membuat tabel secara otomatis. Berikut adalah cara membuat migrasi untuk tabel-tabel yang diperlukan.
+
+#### **Langkah 1: Aktifkan Migrasi**
+Buka file `app/Config/Migrations.php` dan atur `enabled` menjadi `true`:
+
+```php
+public $enabled = true;
+```
+
+#### **Langkah 2: Buat File Migrasi**
+Gunakan perintah CLI untuk membuat file migrasi baru:
+
+```bash
+php spark make:migration Create_Penjualan_Table
+php spark make:migration Create_Pengeluaran_Table
+php spark make:migration Create_Produk_Table
+php spark make:migration Create_Hutang_Piutang_Table
+php spark make:migration Create_Laporan_Pajak_Table
+```
+
+Ini akan membuat file migrasi di folder `app/Database/Migrations`.
+
+---
+
+#### **Langkah 3: Definisikan Struktur Tabel**
+
+##### **File Migrasi: `CreatePenjualanTable`**
+Edit file migrasi `CreatePenjualanTable` untuk mendefinisikan struktur tabel `penjualan`:
+
+```php
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class CreatePenjualanTable extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'tanggal' => [
+                'type' => 'DATE',
+                'null' => false,
+            ],
+            'total_harga' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+            'pajak_ppn' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+            'pajak_pph' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+            'status' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+                'null' => false,
+            ],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('penjualan');
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('penjualan');
+    }
+}
+```
+
+---
+
+##### **File Migrasi: `CreatePengeluaranTable`**
+Edit file migrasi `CreatePengeluaranTable` untuk mendefinisikan struktur tabel `pengeluaran`:
+
+```php
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class CreatePengeluaranTable extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'tanggal' => [
+                'type' => 'DATE',
+                'null' => false,
+            ],
+            'nominal' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+            'keterangan' => [
+                'type' => 'TEXT',
+                'null' => false,
+            ],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('pengeluaran');
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('pengeluaran');
+    }
+}
+```
+
+---
+
+##### **File Migrasi: `CreateProdukTable`**
+Edit file migrasi `CreateProdukTable` untuk mendefinisikan struktur tabel `produk`:
+
+```php
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class CreateProdukTable extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'nama_produk' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false,
+            ],
+            'stok' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'null' => false,
+            ],
+            'harga_beli' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+            'harga_jual' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('produk');
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('produk');
+    }
+}
+```
+
+---
+
+##### **File Migrasi: `CreateHutangPiutangTable`**
+Edit file migrasi `CreateHutangPiutangTable` untuk mendefinisikan struktur tabel `hutang_piutang`:
+
+```php
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class CreateHutangPiutangTable extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'jenis' => [
+                'type' => 'ENUM("hutang", "piutang")',
+                'null' => false,
+            ],
+            'nominal' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+            'tanggal' => [
+                'type' => 'DATE',
+                'null' => false,
+            ],
+            'status' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+                'null' => false,
+            ],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('hutang_piutang');
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('hutang_piutang');
+    }
+}
+```
+
+---
+
+##### **File Migrasi: `CreateLaporanPajakTable`**
+Edit file migrasi `CreateLaporanPajakTable` untuk mendefinisikan struktur tabel `laporan_pajak`:
+
+```php
+<?php
+
+namespace App\Database\Migrations;
+
+use CodeIgniter\Database\Migration;
+
+class CreateLaporanPajakTable extends Migration
+{
+    public function up()
+    {
+        $this->forge->addField([
+            'id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'auto_increment' => true,
+            ],
+            'periode' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+                'null' => false,
+            ],
+            'total_pajak' => [
+                'type' => 'DECIMAL',
+                'constraint' => '10,2',
+                'null' => false,
+            ],
+            'jenis_pajak' => [
+                'type' => 'ENUM("PPN", "PPh", "lainnya")',
+                'null' => false,
+            ],
+        ]);
+        $this->forge->addKey('id', true);
+        $this->forge->createTable('laporan_pajak');
+    }
+
+    public function down()
+    {
+        $this->forge->dropTable('laporan_pajak');
+    }
+}
+```
+
+---
+
+### **3. Jalankan Migrasi**
+Setelah semua file migrasi siap, jalankan migrasi dengan perintah berikut:
+
+```bash
+php spark migrate
+```
+
+Ini akan membuat semua tabel di database sesuai dengan definisi migrasi.
+
+---
+
+### **4. Verifikasi**
+Periksa database Anda untuk memastikan bahwa tabel-tabel telah dibuat dengan benar.
+
+---
+
+Dengan ini, proyek ERP Anda sudah diinisiasi dan tabel-tabel dasar telah dibuat. Langkah selanjutnya adalah mengembangkan model, controller, dan view untuk setiap fitur.
