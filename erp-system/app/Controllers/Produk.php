@@ -20,6 +20,7 @@ class Produk extends BaseController
             'title' => 'Daftar Produk',
             'produk' => $this->produkModel->findAll()
         ];
+        // echo  json_encode($data);
 
         return view('produk/index', $data);
     }

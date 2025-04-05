@@ -16,8 +16,19 @@ class CreatePenjualanTable extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
+            'produk_id' => [
+                'type' => 'INT',
+                'constraint' => 11,
+                'unsigned' => true,
+                'null' => false,
+            ],
             'tanggal' => [
                 'type' => 'DATE',
+                'null' => false,
+            ],
+            'jumlah' => [
+                'type' => 'INT',
+                'constraint' => 11,
                 'null' => false,
             ],
             'total_harga' => [

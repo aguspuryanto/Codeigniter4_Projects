@@ -54,16 +54,16 @@
                             <tr>
                                 <td><?= $i++; ?></td>
                                 <td><?= $p['kode']; ?></td>
-                                <td><?= $p['nama']; ?></td>
+                                <td><?= $p['nama_produk']; ?></td>
                                 <td><?= $p['kategori']; ?></td>
-                                <td>Rp <?= number_format($p['harga'], 0, ',', '.'); ?></td>
+                                <td>Rp <?= number_format($p['harga_jual'], 0, ',', '.'); ?></td>
                                 <td>
-                                    <span class="badge badge-<?= $p['stok'] > 0 ? 'success' : 'danger'; ?>">
+                                    <!-- <span class="badge text-bg-<?= $p['stok'] > 0 ? 'success' : 'danger'; ?>"> -->
                                         <?= $p['stok']; ?>
-                                    </span>
+                                    <!-- </span> -->
                                 </td>
                                 <td>
-                                    <span class="badge badge-<?= $p['status'] === 'aktif' ? 'success' : 'danger'; ?>">
+                                    <span class="badge text-bg-<?= $p['status'] === 'aktif' ? 'success' : 'danger'; ?>">
                                         <?= ucfirst($p['status']); ?>
                                     </span>
                                 </td>

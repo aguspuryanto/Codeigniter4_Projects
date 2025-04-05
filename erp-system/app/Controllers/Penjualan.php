@@ -21,7 +21,8 @@ class Penjualan extends BaseController
     {
         $data = [
             'title' => 'Penjualan',
-            'penjualan' => $this->penjualanModel->getPenjualanWithProduk()
+            'penjualan' => $this->penjualanModel->getPenjualanWithProduk(),
+            'grafik_penjualan' => $this->penjualanModel->getGrafikPenjualan()
         ];
 
         return view('penjualan/index', $data);

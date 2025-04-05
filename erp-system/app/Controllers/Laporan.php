@@ -18,7 +18,11 @@ class Laporan extends BaseController
 
     public function index()
     {
-        return view('laporan/index', ['title' => 'Laporan']);
+        $data = [
+            'title' => 'Laporan',
+            'grafik_penjualan' => $this->penjualanModel->getGrafikPenjualan()
+        ];
+        return view('laporan/index', $data);
     }
 
     public function pajak()

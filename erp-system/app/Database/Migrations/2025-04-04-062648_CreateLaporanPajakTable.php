@@ -8,6 +8,7 @@ class CreateLaporanPajakTable extends Migration
 {
     public function up()
     {
+        $this->forge->dropTable('laporan_pajak');
         $this->forge->addField([
             'id' => [
                 'type' => 'INT',

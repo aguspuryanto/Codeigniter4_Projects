@@ -139,48 +139,84 @@
 
     <!-- Content Row -->
     <div class="row">
-        <!-- Area Chart -->
+        <!-- Sales Chart -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
-                <!-- Card Header -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Grafik Transaksi</h6>
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan</h6>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="transaksiChart"></canvas>
+                        <canvas id="grafikPenjualan"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pie Chart -->
+        <!-- Sales by Category -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
-                <!-- Card Header -->
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Distribusi Transaksi</h6>
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Penjualan per Kategori</h6>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie pt-4 pb-2">
-                        <canvas id="distribusiChart"></canvas>
+                    <div class="chart-pie pt-4">
+                        <canvas id="kategoriPenjualan"></canvas>
                     </div>
                     <div class="mt-4 text-center small">
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-primary"></i> Penjualan
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-danger"></i> Pengeluaran
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-warning"></i> Hutang
-                        </span>
-                        <span class="mr-2">
-                            <i class="fas fa-circle text-info"></i> Piutang
-                        </span>
+                        <?php foreach ($kategori_data ?? [] as $kategori): ?>
+                            <span class="mr-2">
+                                <i class="fas fa-circle" style="color: <?= $kategori['color']; ?>"></i> 
+                                <?= $kategori['label']; ?>
+                            </span>
+                        <?php endforeach; ?>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Area Chart -->
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <!-- Card Header -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Grafik Transaksi</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="transaksiChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pie Chart -->
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <!-- Card Header -->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Distribusi Transaksi</h6>
+            </div>
+            <!-- Card Body -->
+            <div class="card-body">
+                <div class="chart-pie pt-4 pb-2">
+                    <canvas id="distribusiChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-primary"></i> Penjualan
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-danger"></i> Pengeluaran
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-warning"></i> Hutang
+                    </span>
+                    <span class="mr-2">
+                        <i class="fas fa-circle text-info"></i> Piutang
+                    </span>
                 </div>
             </div>
         </div>
@@ -352,6 +388,118 @@
                 ],
                 backgroundColor: ['#4e73df', '#e74a3b', '#f6c23e', '#36b9cc'],
                 hoverBackgroundColor: ['#2e59d9', '#e02d1b', '#f4b619', '#2c9faf'],
+                hoverBorderColor: "rgba(234, 236, 244, 1)",
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                        var value = chart.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                        return datasetLabel + ': Rp ' + number_format(value);
+                    }
+                }
+            },
+            legend: {
+                display: false
+            },
+            cutoutPercentage: 80,
+        },
+    });
+
+    // Sales Chart
+    var ctx3 = document.getElementById("grafikPenjualan");
+    var grafikPenjualan = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: <?= json_encode($penjualan_labels ?? []); ?>,
+            datasets: [{
+                label: "Total Penjualan",
+                backgroundColor: "rgba(78, 115, 223, 0.5)",
+                borderColor: "rgba(78, 115, 223, 1)",
+                borderWidth: 1,
+                data: <?= json_encode($penjualan_data ?? []); ?>,
+            }]
+        },
+        options: {
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    time: {
+                        unit: 'day'
+                    },
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        maxTicksLimit: 7
+                    }
+                }],
+                yAxes: [{
+                    ticks: {
+                        maxTicksLimit: 5,
+                        padding: 10,
+                        callback: function(value, index, values) {
+                            return 'Rp ' + number_format(value);
+                        }
+                    },
+                    gridLines: {
+                        color: "rgb(234, 236, 244)",
+                        zeroLineColor: "rgb(234, 236, 244)",
+                        drawBorder: false,
+                        borderDash: [2],
+                        zeroLineBorderDash: [2]
+                    }
+                }],
+            },
+            legend: {
+                display: false
+            },
+            tooltips: {
+                backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+                titleMarginBottom: 10,
+                titleFontColor: '#6e707e',
+                titleFontSize: 14,
+                borderColor: '#dddfeb',
+                borderWidth: 1,
+                xPadding: 15,
+                yPadding: 15,
+                displayColors: false,
+                intersect: false,
+                mode: 'index',
+                caretPadding: 10,
+                callbacks: {
+                    label: function(tooltipItem, chart) {
+                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
+                        return datasetLabel + ': Rp ' + number_format(tooltipItem.yLabel);
+                    }
+                }
+            }
+        }
+    });
+
+    // Sales by Category Chart
+    var ctx4 = document.getElementById("kategoriPenjualan");
+    var kategoriPenjualan = new Chart(ctx4, {
+        type: 'doughnut',
+        data: {
+            labels: <?= json_encode(array_column($kategori_data ?? [], 'label')); ?>,
+            datasets: [{
+                data: <?= json_encode(array_column($kategori_data ?? [], 'value')); ?>,
+                backgroundColor: <?= json_encode(array_column($kategori_data ?? [], 'color')); ?>,
+                hoverBackgroundColor: <?= json_encode(array_column($kategori_data ?? [], 'hoverColor')); ?>,
                 hoverBorderColor: "rgba(234, 236, 244, 1)",
             }],
         },

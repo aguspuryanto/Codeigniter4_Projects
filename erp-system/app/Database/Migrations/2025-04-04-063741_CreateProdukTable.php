@@ -16,10 +16,22 @@ class CreateProdukTable extends Migration
                 'unsigned' => true,
                 'auto_increment' => true,
             ],
+            'kode' => [
+                'type' => 'VARCHAR',
+                'constraint' => 50,
+                'unique' => true,
+                'null' => false,
+            ],
             'nama_produk' => [
                 'type' => 'VARCHAR',
                 'constraint' => 255,
                 'unique' => true,
+                'null' => false,
+            ],
+            'kategori' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false,
             ],
             'stok' => [
                 'type' => 'INT',
@@ -35,6 +47,16 @@ class CreateProdukTable extends Migration
                 'type' => 'DECIMAL',
                 'constraint' => '15,2',
                 'null' => false,
+            ],
+            'satuan' => [
+                'type' => 'VARCHAR',
+                'constraint' => 255,
+                'null' => false,
+            ],
+            'status' => [
+                'type' => 'ENUM',
+                'constraint' => ['aktif', 'nonaktif'],
+                'default' => 'aktif',
             ],
             'created_at' => [
                 'type' => 'DATETIME',

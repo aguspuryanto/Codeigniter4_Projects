@@ -11,7 +11,7 @@ class ProdukModel extends Model
     protected $useAutoIncrement = true;
     protected $returnType = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['nama_produk', 'stok', 'harga_beli', 'harga_jual'];
+    protected $allowedFields = ['kode', 'nama_produk', 'kategori', 'stok', 'harga_beli', 'harga_jual', 'satuan', 'status', 'created_at', 'updated_at'];
 
     // Dates
     protected $useTimestamps = true;
