@@ -18,9 +18,13 @@ class Pengeluaran extends BaseController
     {
         $data = [
             'title' => 'Pengeluaran',
-            'pengeluaran' => $this->pengeluaranModel->findAll()
+            'pengeluaran' => $this->pengeluaranModel->getAllPengeluaran(),
+            'grafik_pengeluaran' => $this->pengeluaranModel->getGrafikPengeluaran(),
+            'pengeluaran_tertinggi' => $this->pengeluaranModel->getTop5Pengeluaran(),
+            // 'validation' => \Config\Services::validation()
         ];
 
+        // echo json_encode($data['pengeluaran']); die();
         return view('pengeluaran/index', $data);
     }
 

@@ -72,12 +72,65 @@ class PengeluaranModel extends Model
      */
     public function getGrafikPengeluaran()
     {
-        $tahun = date('Y');
-        
-        return $this->select('MONTH(tanggal) as bulan, SUM(nominal) as total')
-                    ->where('YEAR(tanggal)', $tahun)
-                    ->groupBy('MONTH(tanggal)')
-                    ->orderBy('MONTH(tanggal)', 'ASC')
-                    ->findAll();
+        $result = $this->select("DATE_FORMAT(tanggal, '%M %Y') as bulan, SUM(nominal) as total")
+            ->groupBy("DATE_FORMAT(tanggal, '%Y-%m')")
+            ->orderBy('tanggal', 'ASC')
+            ->findAll();
+
+        // Format the data for the chart
+        $formattedData = [];
+        foreach ($result as $row) {
+            if (is_array($row)) {
+                $formattedData[] = [
+                    'bulan' => $row['bulan'],
+                    'total' => (float)$row['total']
+                ];
+            }
+        }
+
+        return $formattedData;
+    }
+
+    public function getAllPengeluaran()
+    {
+        $query = $this->select('*')
+            ->orderBy('tanggal', 'DESC')
+            ->findAll();
+        // dd($query);
+        // Ambil query terakhir dalam bentuk SQL
+        // $lastQuery = $this->db->getLastQuery();
+        // $sql = $lastQuery->getQuery(); // Mengambil string SQL
+
+        // Tampilkan query SQL
+        // echo $sql; die();
+        return $query;
+    }
+
+    public function getTop5Pengeluaran()
+    {
+        return $this->select('pengeluaran.*, DATE_FORMAT(tanggal, "%d %M %Y") as tanggal_format')
+            ->orderBy('nominal', 'DESC')
+            ->limit(5)
+            ->findAll();
+    }
+
+    public function getPengeluaranByKategori()
+    {
+        return $this->select('kategori, subkategori, SUM(nominal) as total')
+            ->groupBy('kategori, subkategori')
+            ->orderBy('total', 'DESC')
+            ->findAll();
+    }
+
+    public function getFormattedPengeluaran()
+    {
+        return $this->select('pengeluaran.*, 
+                            DATE_FORMAT(tanggal, "%d %M %Y") as tanggal_format,
+                            kategori,
+                            subkategori,
+                            nominal as jumlah,
+                            keterangan')
+            ->orderBy('tanggal', 'DESC')
+            ->findAll();
     }
 } 
