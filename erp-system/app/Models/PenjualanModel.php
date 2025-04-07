@@ -97,19 +97,38 @@ class PenjualanModel extends Model
     {
         $tahun = date('Y');
         
-        return $this->select('MONTH(tanggal) as bulan, SUM(total_harga) as total')
+        $query = $this->select('MONTHNAME(tanggal) as bulan, SUM(total_harga) as total')
                     ->where('YEAR(tanggal)', $tahun)
                     ->groupBy('MONTH(tanggal)')
                     ->orderBy('MONTH(tanggal)', 'ASC')
                     ->findAll();
+        // dd($query);
+        // Ambil query terakhir dalam bentuk SQL
+        $lastQuery = $this->db->getLastQuery();
+        $sql = $lastQuery->getQuery(); // Mengambil string SQL
+
+        // Tampilkan query SQL
+        // echo $sql;
+        return $query;
     }
 
     public function getPenjualanWithProduk()
     {
-        $builder = $this->db->table($this->table);
-        $builder->select('penjualan.*, produk.nama_produk as nama_produk, produk.kode as kode_produk');
-        $builder->join('produk', 'produk.id = penjualan.produk_id');
-        $builder->orderBy('penjualan.tanggal', 'DESC');
-        return $builder->get()->getResultArray();
+        return $this->select('penjualan.*, produk.nama_produk')
+            ->join('produk', 'produk.id = penjualan.produk_id')
+            ->orderBy('penjualan.tanggal', 'DESC')
+            ->findAll();
+    }
+
+    public function getTop5BestSellingProducts()
+    {
+        return $this->select('produk.nama_produk, 
+                            SUM(penjualan.jumlah) as total_terjual,
+                            SUM(penjualan.total_harga) as total_penjualan')
+            ->join('produk', 'produk.id = penjualan.produk_id')
+            ->groupBy('penjualan.produk_id')
+            ->orderBy('total_terjual', 'DESC')
+            ->limit(5)
+            ->findAll();
     }
 } 

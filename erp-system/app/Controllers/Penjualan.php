@@ -22,7 +22,8 @@ class Penjualan extends BaseController
         $data = [
             'title' => 'Penjualan',
             'penjualan' => $this->penjualanModel->getPenjualanWithProduk(),
-            'grafik_penjualan' => $this->penjualanModel->getGrafikPenjualan()
+            'grafik_penjualan' => $this->penjualanModel->getGrafikPenjualan(),
+            'produk_terlaris' => $this->penjualanModel->getTop5BestSellingProducts()
         ];
 
         return view('penjualan/index', $data);
