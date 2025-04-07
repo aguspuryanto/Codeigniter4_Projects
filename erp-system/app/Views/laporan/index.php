@@ -3,12 +3,13 @@
 <?= $this->section('content'); ?>
 <div class="container-fluid">
     <!-- Page Heading -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Laporan Keuangan</h1>
         <div>
-            <button type="button" class="btn btn-success" onclick="window.print()">
-                <i class="fas fa-print"></i> Cetak Laporan
-            </button>
+            <a href="<?= base_url('laporan/print?start_date=' . $start_date . '&end_date=' . $end_date . '&jenis=' . $jenis) ?>" 
+               class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" target="_blank">
+                <i class="fas fa-print fa-sm text-white-50"></i> Cetak Laporan
+            </a>
         </div>
     </div>
 
@@ -18,37 +19,29 @@
             <h6 class="m-0 font-weight-bold text-primary">Filter Laporan</h6>
         </div>
         <div class="card-body">
-            <form action="<?= base_url('laporan'); ?>" method="get">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="start_date">Tanggal Mulai</label>
-                            <input type="date" class="form-control" id="start_date" name="start_date" 
-                                   value="<?= $start_date ?? date('Y-m-01'); ?>">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="end_date">Tanggal Akhir</label>
-                            <input type="date" class="form-control" id="end_date" name="end_date" 
-                                   value="<?= $end_date ?? date('Y-m-t'); ?>">
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="jenis">Jenis Laporan</label>
-                            <select class="form-control" id="jenis" name="jenis">
-                                <option value="semua" <?= ($jenis ?? '') == 'semua' ? 'selected' : ''; ?>>Semua</option>
-                                <option value="penjualan" <?= ($jenis ?? '') == 'penjualan' ? 'selected' : ''; ?>>Penjualan</option>
-                                <option value="pengeluaran" <?= ($jenis ?? '') == 'pengeluaran' ? 'selected' : ''; ?>>Pengeluaran</option>
-                                <option value="hutang" <?= ($jenis ?? '') == 'hutang' ? 'selected' : ''; ?>>Hutang</option>
-                                <option value="piutang" <?= ($jenis ?? '') == 'piutang' ? 'selected' : ''; ?>>Piutang</option>
-                            </select>
-                        </div>
-                    </div>
+            <form action="<?= base_url('laporan') ?>" method="get" class="row">
+                <div class="col-md-3 mb-3">
+                    <label for="start_date">Tanggal Mulai</label>
+                    <input type="date" class="form-control" id="start_date" name="start_date" 
+                           value="<?= $start_date ?>" required>
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Tampilkan</button>
+                <div class="col-md-3 mb-3">
+                    <label for="end_date">Tanggal Selesai</label>
+                    <input type="date" class="form-control" id="end_date" name="end_date" 
+                           value="<?= $end_date ?>" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="jenis">Jenis Transaksi</label>
+                    <select class="form-control" id="jenis" name="jenis">
+                        <option value="semua" <?= $jenis == 'semua' ? 'selected' : '' ?>>Semua</option>
+                        <option value="penjualan" <?= $jenis == 'penjualan' ? 'selected' : '' ?>>Penjualan</option>
+                        <option value="pengeluaran" <?= $jenis == 'pengeluaran' ? 'selected' : '' ?>>Pengeluaran</option>
+                        <option value="hutang" <?= $jenis == 'hutang' ? 'selected' : '' ?>>Hutang</option>
+                        <option value="piutang" <?= $jenis == 'piutang' ? 'selected' : '' ?>>Piutang</option>
+                    </select>
+                </div>
+                <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Filter</button>
                 </div>
             </form>
         </div>
@@ -65,7 +58,7 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Total Penjualan</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Rp <?= number_format($total_penjualan ?? 0, 0, ',', '.'); ?>
+                                Rp <?= number_format($total_penjualan, 0, ',', '.') ?>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -85,7 +78,7 @@
                             <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
                                 Total Pengeluaran</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Rp <?= number_format($total_pengeluaran ?? 0, 0, ',', '.'); ?>
+                                Rp <?= number_format($total_pengeluaran, 0, ',', '.') ?>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -105,7 +98,7 @@
                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                 Total Hutang</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Rp <?= number_format($total_hutang ?? 0, 0, ',', '.'); ?>
+                                Rp <?= number_format($total_hutang, 0, ',', '.') ?>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -118,14 +111,14 @@
 
         <!-- Total Piutang Card -->
         <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-info shadow h-100 py-2">
+            <div class="card border-left-success shadow h-100 py-2">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Total Piutang</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                Rp <?= number_format($total_piutang ?? 0, 0, ',', '.'); ?>
+                                Rp <?= number_format($total_piutang, 0, ',', '.') ?>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -137,92 +130,38 @@
         </div>
     </div>
 
-    <!-- Content Row -->
+    <!-- Charts Row -->
     <div class="row">
-        <!-- Sales Chart -->
+        <!-- Penjualan & Pengeluaran Chart -->
         <div class="col-xl-8 col-lg-7">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan & Pengeluaran</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="grafikPenjualan"></canvas>
+                        <canvas id="salesExpenseChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Sales by Category -->
+        <!-- Hutang & Piutang Chart -->
         <div class="col-xl-4 col-lg-5">
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Penjualan per Kategori</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Hutang & Piutang</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="kategoriPenjualan"></canvas>
-                    </div>
-                    <div class="mt-4 text-center small">
-                        <?php foreach ($kategori_data ?? [] as $kategori): ?>
-                            <span class="mr-2">
-                                <i class="fas fa-circle" style="color: <?= $kategori['color']; ?>"></i> 
-                                <?= $kategori['label']; ?>
-                            </span>
-                        <?php endforeach; ?>
+                    <div class="chart-pie pt-4 pb-2">
+                        <canvas id="debtReceivableChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Area Chart -->
-    <div class="col-xl-8 col-lg-7">
-        <div class="card shadow mb-4">
-            <!-- Card Header -->
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Grafik Transaksi</h6>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="transaksiChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Pie Chart -->
-    <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <!-- Card Header -->
-            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Distribusi Transaksi</h6>
-            </div>
-            <!-- Card Body -->
-            <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                    <canvas id="distribusiChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-primary"></i> Penjualan
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-danger"></i> Pengeluaran
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-warning"></i> Hutang
-                    </span>
-                    <span class="mr-2">
-                        <i class="fas fa-circle text-info"></i> Piutang
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- DataTables -->
+    <!-- Transaction Details -->
     <div class="card shadow mb-4">
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Detail Transaksi</h6>
@@ -239,22 +178,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (isset($transaksi) && is_array($transaksi)) : ?>
-                            <?php foreach ($transaksi as $t) : ?>
-                                <tr>
-                                    <td><?= date('d/m/Y', strtotime($t['tanggal'])); ?></td>
-                                    <td>
-                                        <span class="badge badge-<?= $t['jenis'] == 'penjualan' ? 'primary' : 
-                                            ($t['jenis'] == 'pengeluaran' ? 'danger' : 
-                                            ($t['jenis'] == 'hutang' ? 'warning' : 'info')); ?>">
-                                            <?= ucfirst($t['jenis']); ?>
-                                        </span>
-                                    </td>
-                                    <td><?= $t['keterangan']; ?></td>
-                                    <td>Rp <?= number_format($t['jumlah'], 0, ',', '.'); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                        <?php foreach ($transaksi as $t): ?>
+                            <tr>
+                                <td><?= date('d/m/Y', strtotime($t['tanggal'])) ?></td>
+                                <td><?= $t['jenis'] ?></td>
+                                <td><?= $t['keterangan'] ?></td>
+                                <td class="<?= $t['tipe'] == 'masuk' ? 'text-success' : 'text-danger' ?>">
+                                    <?= $t['tipe'] == 'masuk' ? '+' : '-' ?> 
+                                    Rp <?= number_format($t['jumlah'], 0, ',', '.') ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -264,299 +198,96 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('scripts'); ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Set new default font family and font color to mimic Bootstrap's default styling
-    Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-    Chart.defaults.global.defaultFontColor = '#858796';
-
-    // Transaksi Chart
-    var ctx = document.getElementById("transaksiChart");
-    var transaksiChart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: <?= json_encode($chart_labels ?? []); ?>,
-            datasets: [{
-                label: "Penjualan",
-                lineTension: 0.3,
-                backgroundColor: "rgba(78, 115, 223, 0.05)",
-                borderColor: "rgba(78, 115, 223, 1)",
-                pointRadius: 3,
-                pointBackgroundColor: "rgba(78, 115, 223, 1)",
-                pointBorderColor: "rgba(78, 115, 223, 1)",
-                pointHoverRadius: 3,
-                pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
-                pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-                pointHitRadius: 10,
-                pointBorderWidth: 2,
-                data: <?= json_encode($chart_penjualan ?? []); ?>,
-            },
-            {
-                label: "Pengeluaran",
-                lineTension: 0.3,
-                backgroundColor: "rgba(231, 74, 59, 0.05)",
-                borderColor: "rgba(231, 74, 59, 1)",
-                pointRadius: 3,
-                pointBackgroundColor: "rgba(231, 74, 59, 1)",
-                pointBorderColor: "rgba(231, 74, 59, 1)",
-                pointHoverRadius: 3,
-                pointHoverBackgroundColor: "rgba(231, 74, 59, 1)",
-                pointHoverBorderColor: "rgba(231, 74, 59, 1)",
-                pointHitRadius: 10,
-                pointBorderWidth: 2,
-                data: <?= json_encode($chart_pengeluaran ?? []); ?>,
-            }],
-        },
-        options: {
-            maintainAspectRatio: false,
-            layout: {
-                padding: {
-                    left: 10,
-                    right: 25,
-                    top: 25,
-                    bottom: 0
+// Sales & Expense Chart
+var ctx = document.getElementById('salesExpenseChart').getContext('2d');
+var salesExpenseChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: <?= json_encode($grafik_penjualan['labels']) ?>,
+        datasets: [{
+            label: 'Penjualan',
+            data: <?= json_encode($grafik_penjualan['data']) ?>,
+            borderColor: '#4e73df',
+            backgroundColor: 'rgba(78, 115, 223, 0.05)',
+            tension: 0.3
+        }, {
+            label: 'Pengeluaran',
+            data: <?= json_encode($grafik_pengeluaran['data']) ?>,
+            borderColor: '#e74a3b',
+            backgroundColor: 'rgba(231, 74, 59, 0.05)',
+            tension: 0.3
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    }
                 }
-            },
-            scales: {
-                xAxes: [{
-                    time: {
-                        unit: 'date'
-                    },
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    ticks: {
-                        maxTicksLimit: 7
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        maxTicksLimit: 5,
-                        padding: 10,
-                        callback: function(value, index, values) {
-                            return 'Rp ' + number_format(value);
-                        }
-                    },
-                    gridLines: {
-                        color: "rgb(234, 236, 244)",
-                        zeroLineColor: "rgb(234, 236, 244)",
-                        drawBorder: false,
-                        borderDash: [2],
-                        zeroLineBorderDash: [2]
-                    }
-                }],
-            },
-            legend: {
-                display: true
-            },
-            tooltips: {
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 14,
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                intersect: false,
-                mode: 'index',
-                caretPadding: 10,
+            }
+        },
+        plugins: {
+            tooltip: {
                 callbacks: {
-                    label: function(tooltipItem, chart) {
-                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                        return datasetLabel + ': Rp ' + number_format(tooltipItem.yLabel);
+                    label: function(context) {
+                        return context.dataset.label + ': Rp ' + 
+                               context.parsed.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
                     }
                 }
             }
         }
-    });
-
-    // Distribusi Chart
-    var ctx2 = document.getElementById("distribusiChart");
-    var distribusiChart = new Chart(ctx2, {
-        type: 'doughnut',
-        data: {
-            labels: ["Penjualan", "Pengeluaran", "Hutang", "Piutang"],
-            datasets: [{
-                data: [
-                    <?= $total_penjualan ?? 0; ?>,
-                    <?= $total_pengeluaran ?? 0; ?>,
-                    <?= $total_hutang ?? 0; ?>,
-                    <?= $total_piutang ?? 0; ?>
-                ],
-                backgroundColor: ['#4e73df', '#e74a3b', '#f6c23e', '#36b9cc'],
-                hoverBackgroundColor: ['#2e59d9', '#e02d1b', '#f4b619', '#2c9faf'],
-                hoverBorderColor: "rgba(234, 236, 244, 1)",
-            }],
-        },
-        options: {
-            maintainAspectRatio: false,
-            tooltips: {
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                caretPadding: 10,
-                callbacks: {
-                    label: function(tooltipItem, chart) {
-                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                        var value = chart.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                        return datasetLabel + ': Rp ' + number_format(value);
-                    }
-                }
-            },
-            legend: {
-                display: false
-            },
-            cutoutPercentage: 80,
-        },
-    });
-
-    // Sales Chart
-    var ctx3 = document.getElementById("grafikPenjualan");
-    var grafikPenjualan = new Chart(ctx3, {
-        type: 'bar',
-        data: {
-            labels: <?= json_encode($penjualan_labels ?? []); ?>,
-            datasets: [{
-                label: "Total Penjualan",
-                backgroundColor: "rgba(78, 115, 223, 0.5)",
-                borderColor: "rgba(78, 115, 223, 1)",
-                borderWidth: 1,
-                data: <?= json_encode($penjualan_data ?? []); ?>,
-            }]
-        },
-        options: {
-            maintainAspectRatio: false,
-            scales: {
-                xAxes: [{
-                    time: {
-                        unit: 'day'
-                    },
-                    gridLines: {
-                        display: false,
-                        drawBorder: false
-                    },
-                    ticks: {
-                        maxTicksLimit: 7
-                    }
-                }],
-                yAxes: [{
-                    ticks: {
-                        maxTicksLimit: 5,
-                        padding: 10,
-                        callback: function(value, index, values) {
-                            return 'Rp ' + number_format(value);
-                        }
-                    },
-                    gridLines: {
-                        color: "rgb(234, 236, 244)",
-                        zeroLineColor: "rgb(234, 236, 244)",
-                        drawBorder: false,
-                        borderDash: [2],
-                        zeroLineBorderDash: [2]
-                    }
-                }],
-            },
-            legend: {
-                display: false
-            },
-            tooltips: {
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                titleMarginBottom: 10,
-                titleFontColor: '#6e707e',
-                titleFontSize: 14,
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                intersect: false,
-                mode: 'index',
-                caretPadding: 10,
-                callbacks: {
-                    label: function(tooltipItem, chart) {
-                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                        return datasetLabel + ': Rp ' + number_format(tooltipItem.yLabel);
-                    }
-                }
-            }
-        }
-    });
-
-    // Sales by Category Chart
-    var ctx4 = document.getElementById("kategoriPenjualan");
-    var kategoriPenjualan = new Chart(ctx4, {
-        type: 'doughnut',
-        data: {
-            labels: <?= json_encode(array_column($kategori_data ?? [], 'label')); ?>,
-            datasets: [{
-                data: <?= json_encode(array_column($kategori_data ?? [], 'value')); ?>,
-                backgroundColor: <?= json_encode(array_column($kategori_data ?? [], 'color')); ?>,
-                hoverBackgroundColor: <?= json_encode(array_column($kategori_data ?? [], 'hoverColor')); ?>,
-                hoverBorderColor: "rgba(234, 236, 244, 1)",
-            }],
-        },
-        options: {
-            maintainAspectRatio: false,
-            tooltips: {
-                backgroundColor: "rgb(255,255,255)",
-                bodyFontColor: "#858796",
-                borderColor: '#dddfeb',
-                borderWidth: 1,
-                xPadding: 15,
-                yPadding: 15,
-                displayColors: false,
-                caretPadding: 10,
-                callbacks: {
-                    label: function(tooltipItem, chart) {
-                        var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-                        var value = chart.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                        return datasetLabel + ': Rp ' + number_format(value);
-                    }
-                }
-            },
-            legend: {
-                display: false
-            },
-            cutoutPercentage: 80,
-        },
-    });
-
-    // DataTable
-    $(document).ready(function() {
-        $('#dataTable').DataTable({
-            "order": [[ 0, "desc" ]]
-        });
-    });
-
-    // Number format helper
-    function number_format(number, decimals, dec_point, thousands_sep) {
-        number = (number + '').replace(',', '').replace(' ', '');
-        var n = !isFinite(+number) ? 0 : +number,
-            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-            s = '',
-            toFixedFix = function(n, prec) {
-                var k = Math.pow(10, prec);
-                return '' + Math.round(n * k) / k;
-            };
-        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-        if (s[0].length > 3) {
-            s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-        }
-        if ((s[1] || '').length < prec) {
-            s[1] = s[1] || '';
-            s[1] += new Array(prec - s[1].length + 1).join('0');
-        }
-        return s.join(dec);
     }
+});
+
+// Debt & Receivable Chart
+var ctx2 = document.getElementById('debtReceivableChart').getContext('2d');
+var debtReceivableChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: <?= json_encode($grafik_hutang_piutang['labels']) ?>,
+        datasets: [{
+            label: 'Hutang',
+            data: <?= json_encode($grafik_hutang_piutang['hutang']) ?>,
+            backgroundColor: '#f6c23e',
+            borderColor: '#f6c23e',
+            borderWidth: 1
+        }, {
+            label: 'Piutang',
+            data: <?= json_encode($grafik_hutang_piutang['piutang']) ?>,
+            backgroundColor: '#1cc88a',
+            borderColor: '#1cc88a',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return 'Rp ' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    }
+                }
+            }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': Rp ' + 
+                               context.parsed.y.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+                    }
+                }
+            }
+        }
+    }
+});
 </script>
 <?= $this->endSection(); ?> 

@@ -25,6 +25,7 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // $routes->get('/piutang', 'HutangPiutang::index');
     // Laporan
     $routes->get('/laporan', 'Laporan::index');
+    $routes->get('/laporan/print', 'Laporan::print');
     // Profile
     $routes->get('profile', 'Profile::index');
     $routes->post('profile/update', 'Profile::update');
