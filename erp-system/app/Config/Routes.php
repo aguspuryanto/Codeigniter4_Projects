@@ -25,6 +25,10 @@ $routes->group('', ['filter' => 'auth'], function ($routes) {
     // $routes->get('/piutang', 'HutangPiutang::index');
     // Laporan
     $routes->get('/laporan', 'Laporan::index');
+    // Profile
+    $routes->get('profile', 'Profile::index');
+    $routes->post('profile/update', 'Profile::update');
+    $routes->get('profile/logout', 'Profile::logout');
 });
 
 $routes->group('penjualan', ['filter' => 'auth'], function ($routes) {

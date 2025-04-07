@@ -19,36 +19,36 @@
         </div>
     <?php endif; ?>
 
-    <!-- Sales Chart -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan</h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <!-- Sales Chart -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Penjualan</h6>
+                </div>
+                <div class="card-body">
                     <div class="chart-area">
                         <canvas id="grafikPenjualan" style="height: 400px;"></canvas>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Produk Terlaris</h6>
-                        </div>
-                        <div class="card-body overflow-auto p-0" style="max-height: 400px;">
-                            <div class="list-group">
-                                <?php foreach ($produk_terlaris ?? [] as $index => $produk): ?>
-                                    <div class="list-group-item list-group-item-action">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1"><?= $index + 1 ?>. <?= $produk['nama_produk'] ?></h6>
-                                            <small class="text-muted"><?= $produk['total_terjual'] ?> terjual</small>
-                                        </div>
-                                        <p class="mb-1">Total: Rp <?= number_format($produk['total_penjualan'], 0, ',', '.') ?></p>
-                                    </div>
-                                <?php endforeach; ?>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Produk Terlaris</h6>
+                </div>
+                <div class="card-body overflow-auto p-0" style="max-height: 400px;">
+                    <div class="list-group">
+                        <?php foreach ($produk_terlaris ?? [] as $index => $produk): ?>
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1"><?= $index + 1 ?>. <?= $produk['nama_produk'] ?></h6>
+                                    <small class="text-muted"><?= $produk['total_terjual'] ?> terjual</small>
+                                </div>
+                                <p class="mb-1">Total: Rp <?= number_format($produk['total_penjualan'], 0, ',', '.') ?></p>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>

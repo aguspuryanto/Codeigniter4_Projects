@@ -10,36 +10,36 @@
         </a>
     </div>
 
-    <!-- Content Row -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Grafik Pengeluaran</h6>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-8">
+    <div class="row">
+        <div class="col-xl-8 col-lg-7">
+            <!-- Content Row -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Grafik Pengeluaran</h6>
+                </div>
+                <div class="card-body">
                     <div class="chart-area">
                         <canvas id="grafikPengeluaran" style="height: 400px;"></canvas>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Pengeluaran Tertinggi</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="list-group">
-                                <?php foreach ($pengeluaran_tertinggi ?? [] as $index => $output): ?>
-                                    <div class="list-group-item list-group-item-action">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h6 class="mb-1"><?= $index + 1 ?>. <?= $output['kategori'] ?> - <?= $output['subkategori'] ?></h6>
-                                            <small class="text-muted"><?= date('d M Y', strtotime($output['tanggal'])) ?></small>
-                                        </div>
-                                        <p class="mb-1">Total: Rp <?= number_format($output['nominal'], 0, ',', '.') ?></p>
-                                    </div>
-                                <?php endforeach; ?>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Pengeluaran Tertinggi</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <?php foreach ($pengeluaran_tertinggi ?? [] as $index => $output): ?>
+                            <div class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1"><?= $index + 1 ?>. <?= $output['kategori'] ?> - <?= $output['subkategori'] ?></h6>
+                                    <small class="text-muted"><?= date('d M Y', strtotime($output['tanggal'])) ?></small>
+                                </div>
+                                <p class="mb-1">Total: Rp <?= number_format($output['nominal'], 0, ',', '.') ?></p>
                             </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
