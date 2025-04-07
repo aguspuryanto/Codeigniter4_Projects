@@ -119,4 +119,36 @@ class HutangPiutangModel extends Model
         
         return $data;
     }
+
+    public function getGrafikHutangPiutang()
+    {
+        // Get total hutang
+        $totalHutang = $this->select('SUM(nominal) as total')
+            ->where('jenis', 'hutang')
+            ->first();
+
+        // Get total piutang
+        $totalPiutang = $this->select('SUM(nominal) as total')
+            ->where('jenis', 'piutang')
+            ->first();
+
+        // Get total hutang yang sudah dibayar
+        $hutangLunas = $this->select('SUM(nominal) as total')
+            ->where('jenis', 'hutang')
+            ->where('status', 'sudah bayar')
+            ->first();
+
+        // Get total piutang yang sudah dibayar
+        $piutangLunas = $this->select('SUM(nominal) as total')
+            ->where('jenis', 'piutang')
+            ->where('status', 'sudah bayar')
+            ->first();
+
+        return [
+            'total_hutang' => (float)($totalHutang['total'] ?? 0),
+            'total_piutang' => (float)($totalPiutang['total'] ?? 0),
+            'hutang_lunas' => (float)($hutangLunas['total'] ?? 0),
+            'piutang_lunas' => (float)($piutangLunas['total'] ?? 0)
+        ];
+    }
 } 

@@ -18,8 +18,9 @@ class HutangPiutang extends BaseController
     {
         $data = [
             'title' => 'Hutang & Piutang',
-            'hutang' => $this->hutangPiutangModel->where('jenis', 'Hutang')->findAll(),
-            'piutang' => $this->hutangPiutangModel->where('jenis', 'Piutang')->findAll()
+            'hutang' => $this->hutangPiutangModel->where('jenis', 'hutang')->findAll(),
+            'piutang' => $this->hutangPiutangModel->where('jenis', 'piutang')->findAll(),
+            'grafik_data' => $this->hutangPiutangModel->getGrafikHutangPiutang()
         ];
 
         return view('hutang_piutang/index', $data);
