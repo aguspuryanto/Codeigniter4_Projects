@@ -12,7 +12,7 @@ use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\PageCache;
 use CodeIgniter\Filters\PerformanceMetrics;
 use CodeIgniter\Filters\SecureHeaders;
-
+use App\Filters\Auth;
 class Filters extends BaseFilters
 {
     /**
@@ -30,12 +30,11 @@ class Filters extends BaseFilters
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        // 'cors'          => Cors::class,
+        'cors'          => Cors::class,
         'forcehttps'    => ForceHTTPS::class,
         'pagecache'     => PageCache::class,
         'performance'   => PerformanceMetrics::class,
-        'auth'          => \App\Filters\AuthFilter::class,
-        'cors'          => \App\Filters\CorsFilter::class,
+        'auth'          => Auth::class,
     ];
 
     /**
@@ -71,13 +70,13 @@ class Filters extends BaseFilters
      */
     public array $globals = [
         'before' => [
-            'cors',
             // 'honeypot',
-            'csrf' => ['except' => ['api/*']], // Nonaktifkan CSRF untuk endpoint API,
+            // 'csrf',
+            // 'invalidchars',
         ],
         'after' => [
-            'toolbar',
             // 'honeypot',
+            // 'secureheaders',
         ],
     ];
 
@@ -105,9 +104,5 @@ class Filters extends BaseFilters
      *
      * @var array<string, array<string, list<string>>>
      */
-    // public array $filters = [];
-    
-    public array $filters = [
-        'auth' => ['before' => ['dashboard', 'angsuran-kavling', 'angsuran-rumah', 'summary', 'renovasi']],
-    ];
+    public array $filters = [];
 }

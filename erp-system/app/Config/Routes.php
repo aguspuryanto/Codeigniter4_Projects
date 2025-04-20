@@ -59,3 +59,11 @@ $routes->group('hutang', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:segment)', 'HutangPiutang::edit/$1');
     $routes->add('delete/(:segment)', 'HutangPiutang::delete/$1');
 });
+
+// API Routes
+$routes->group('api', ['filter' => 'cors'], function($routes) {
+    $routes->options('products', 'Api\ProductController::options');
+    $routes->options('products/upload-image', 'Api\ProductController::options');
+    $routes->post('products', 'Api\ProductController::create');
+    $routes->post('products/upload-image', 'Api\ProductController::uploadImage');
+});
